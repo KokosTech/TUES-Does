@@ -3,6 +3,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { AccountContext } from "../contexts/UserContext";
 
 const Login = () => {
+const { setUser } = useContext(AccountContext);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   return (
       <div className="h-screen flex justify-evenly items-center dark:text-white dark:bg-black">
           <div className="flex flex-col w-3/12">

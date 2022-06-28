@@ -28,3 +28,6 @@ CREATE TABLE tasks (
 
 INSERT INTO users(username, passhash) values($1, $2);
 
+
+INSERT INTO lists(owner_id, name, icon, color) values($1, $2, $3, $4);
+INSERT INTO tasks(list_id, name, description, priority, due_date, flagged, completed) values($1, $2, $3, $4, $5, $6, $7);

@@ -10,7 +10,7 @@ const NavItem = ({ list, setItems }) => {
                 handleChange();
             }}
           >
-            <p className="text-gray-600">{list}</p>
+            <p className="dark:text-gray-600 dark:hover:text-white">{list}</p>
         </div>
     );
 }
