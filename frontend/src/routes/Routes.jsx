@@ -4,6 +4,8 @@ import { AccountContext } from "../contexts/UserContext";
 //import Home from "./../ToDo";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import Logout from "../pages/Logout";
+
 import ToDo from "../pages/ToDo";
 
 import PrivateRoutes from "./PrivateRoutes";
@@ -29,6 +31,7 @@ const VRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/home" element={<ToDo />} />
+        <Route path="/logout" element={<Logout />} />
       </Route>
       <Route path="*" element={<Error404 />} />
     </Routes>
