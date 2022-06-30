@@ -107,12 +107,16 @@ ORDER BY tasks.id;
 
 /* Update */
 
+/* Users */
+
 UPDATE
   users
 SET
   username = $1
 WHERE
   id = $2;
+
+/* Lists */
 
 UPDATE
   lists
@@ -122,6 +126,8 @@ SET
   color = $3
 WHERE
   id = $4;
+
+/* Tasks */
 
 UPDATE 
   tasks 
