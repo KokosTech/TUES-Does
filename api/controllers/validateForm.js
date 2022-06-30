@@ -3,10 +3,10 @@ validateForm = (req, res, next) => {
     console.log("nl");
     if (!username || !password) {
         console.log("TESRING");
-        res.status(400).json({ message: 'Please enter all fields' });
+        res.json({ message: 'Please enter all fields' });
     } else {
         console.log("TESRING 2");
-        res.json({ message: 'Form validated' });
+        //res.json({ message: 'Form validated' });
         next();
     }
 }

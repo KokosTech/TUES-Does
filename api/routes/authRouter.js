@@ -29,7 +29,7 @@ router
                 u.username = $1`, [req.body.username]);
 
         if (potentialLogin.rows.length === 0) {
-            res.status(400).json({ message: 'Invalid username or password' });
+            res.json({ message: 'Invalid username or password' });
         } else {
             const isSamePass = await bcrypt.compare(
                 req.body.password, 
@@ -45,10 +45,10 @@ router
                     //token: token
                 }
 
-                res.status(200).json({ loggedIn: true, username: req.body.username });
+                res.json({ loggedIn: true, username: req.body.username });
             }
             else {
-                res.status(400).json({ loggedIn: false, message: 'Invalid credentials' });
+                res.json({ loggedIn: false, message: 'Invalid credentials' });
             }
         }
     });
@@ -71,9 +71,9 @@ router.post('/signup', validateForm, async(req, res) => {
             username: newUser.rows[0].username,
             token: token
         }
-        res.status(200).json({ token: token });
+        res.json({ token: token });
     } else {
-        res.status(400).json({ loggedIn: false, message: 'Username is already taken' });
+        res.json({ loggedIn: false, message: 'Username is already taken' });
     }
 });
 

@@ -15,7 +15,7 @@ const { setUser } = useContext(AccountContext);
             password: password.value
         };
 
-        fetch("/api/login", {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/auth/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
