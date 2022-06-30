@@ -1,0 +1,15 @@
+const { verify } = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = verify(token, process.env.JWT_SECRET);
+        const { userId } = decodedToken;
+        req.userId = userId;
+        next();
+    } catch (err) {
+        res.status(401).json({ 
+            message: "You must be logged in to access this route" 
+        });
+    }
+}
