@@ -112,7 +112,7 @@ router
             );
         })
     router
-    .route(checkAuth, "/lists/:id")
+    .route("/lists/:id")
         .get((req, res) => {
             const id = req.params.id;
             if(!id) {
@@ -198,9 +198,9 @@ router
                     res.status(500).json({ error: err.message });
                 }
             );
-        })
+        });
     router
-    .route(checkAuth, "/tasks/:id")
+    .route("/tasks/:id")
         .get((req, res) => {
             const id = req.params.id;
             if(!id) {
@@ -210,11 +210,13 @@ router
 
             pool.query(`SELECT
                             tasks.id, 
-                            tasks.name,
                             tasks.list_id,
+                            tasks.name,
+                            tasks.description,
+                            tasks.priority,
+                            tasks.due_date,
+                            tasks.flagged,
                             tasks.completed,
-                            tasks.owner_id,
-                            users.username
                           FROM tasks
                             JOIN users ON tasks.owner_id = users.id
                           WHERE tasks.id = $1`, [id])
@@ -233,15 +235,36 @@ router
             }
 
             const task = req.body;
+            console.log("HEEEEYYYYY");
+            console.log(task);
             if(!task) {
                 res.status(400).json({ message: 'No task specified' });
                 return;
             }
-
-            pool.query(`INSERT INTO tasks (name, list_id, owner_id) VALUES ($1, $2, $3)`, [task.name, task.list_id, id])
+            
+            pool.query(`INSERT INTO 
+                            tasks (
+                                name, 
+                                list_id,
+                                description,
+                                priority,
+                                due_date,
+                                flagged,
+                                completed
+                            ) 
+                        VALUES 
+                            ($1, $2, $3, $4, $5, $6, $7);`, 
+                            [task.name, 
+                                task.list_id, 
+                                task.description, 
+                                task.priority, 
+                                task.due_date, 
+                                false,
+                                task.completed])
                 .then(() => {
                     res.json({ message: 'Task created' });
                 }).catch(err => {
+                    console.log(err);
                     res.status(500).json({ error: err.message });
                 }
             );
