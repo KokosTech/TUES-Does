@@ -44,6 +44,29 @@ const SignUp = () => {
                     setError(data.status);
                 } else if (data.loggedIn) {
                     setUser({ ...data });
+                    fetch(process.env.REACT_APP_SERVER_URL + "/lists/" + user.username, {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            name: "To Do",
+                            user: user.username
+                        })
+                    })
+                        .then(r => {
+                            if (!r || !r.ok || r.status >= 400) {
+                                return;
+                            }
+                            return r.json();
+                        }).then(data => {
+                            if (!data) {
+                                return;
+                            }
+                        }).catch(err => {
+                            console.log(err);
+                        });
                     navigate("/home");
                 }
             })

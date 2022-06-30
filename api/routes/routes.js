@@ -61,7 +61,7 @@ router
                 return;
             }
 
-            pool.query(`INSERT INTO lists (name, icon, color, owner_id) VALUES ($1, $2, $3, (SELECT id FROM users WHERE username = $4))`, [list.name, list.icon, list.color, user])
+            pool.query(`INSERT INTO lists (name, icon, color, owner_id) VALUES ($1, $2, $3, (SELECT id FROM users WHERE username = $4))`, [list.name, list.icon || 'default', list.color || 'blue', user])
                 .then(() => {
                     res.json({ message: 'List created' });
                 }).catch(err => {
@@ -105,7 +105,7 @@ router
 
             pool.query(`DELETE FROM lists WHERE id = $1`, [list.id])
                 .then(() => {
-                    res.json({ message: 'List deleted' });
+                    res.status(200).json({ message: 'List deleted' });
                 }).catch(err => {
                     res.status(500).json({ error: err.message });
                 }
@@ -221,7 +221,7 @@ router
                             JOIN lists ON tasks.list_id = lists.id
                           WHERE lists.id = $1
                           ORDER BY
-                            tasks.completed, tasks.id`, [id])
+                            tasks.completed, tasks.id DESC`, [id])
                 .then(task => {
                     res.json(task.rows);
                 }).catch(err => {
@@ -325,4 +325,66 @@ router
                 }
             );
         })
+        
+    router.get("/tasks/:id/completed", (req, res) => {
+        const id = req.params.id;
+        if(!id) {
+            res.status(400).json({ message: 'No id specified' });
+            return;
+        }
+        
+        pool.query(`SELECT
+                        tasks.id,
+                        tasks.list_id,
+                        tasks.name,
+                        tasks.description,
+                        tasks.priority,
+                        tasks.due_date,
+                        tasks.flagged,
+                        tasks.completed
+                    FROM tasks
+                        JOIN lists ON tasks.list_id = lists.id
+                    WHERE lists.id = $1
+                    AND tasks.completed = true
+                    ORDER BY
+                        tasks.completed, tasks.id DESC`, [id])
+            .then(task => {
+                res.json(task.rows);
+            }).catch(err => {
+                res.status(500).json({ error: err.message });
+            }
+        );
+    });
+
+    router.get("/tasks/:id/uncompleted", (req, res) => {
+        const id = req.params.id;
+        if(!id) {
+            res.status(400).json({ message: 'No id specified' });
+            return;
+        }
+
+        pool.query(`SELECT
+                        tasks.id,
+                        tasks.list_id,
+                        tasks.name,
+                        tasks.description,
+                        tasks.priority,
+                        tasks.due_date,
+                        tasks.flagged,
+                        tasks.completed
+                    FROM tasks
+                        JOIN lists ON tasks.list_id = lists.id
+                    WHERE lists.id = $1 
+                    AND tasks.completed = false
+                    ORDER BY
+                        tasks.completed, tasks.id DESC`, [id])
+            .then(task => {
+                res.json(task.rows);
+            }).catch(err => {
+                res.status(500).json({ error: err.message });
+            }
+        );
+    });
+
+
 module.exports = router;

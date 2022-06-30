@@ -69,7 +69,7 @@ router.post('/signup', validateForm, async(req, res) => {
             username: newUser.rows[0].username,
             token: token
         }
-        res.json({ token: token });
+        res.json({ loggedIn: true, username: req.body.username, token: token });
     } else {
         res.json({ loggedIn: false, message: 'Username is already taken' });
     }
