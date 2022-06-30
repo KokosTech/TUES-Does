@@ -53,7 +53,8 @@ app.use(helmet());
 app.use(
   cors({
     origin: 'http://localhost:3000',
-    credentials: true
+    preflightContinue: true,
+    credentials: true,
   })
 );
 
@@ -73,10 +74,13 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7 * 2,
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'none',
         secure: process.env.NODE_ENV === 'production',
         },
 }));
+
+app.enable('trust proxy');
+
 
 app.use('/auth', authRouter);
 

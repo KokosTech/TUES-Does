@@ -44,10 +44,8 @@ router
                     username: req.body.username
                     //token: token
                 }
-
                 res.json({ loggedIn: true, username: req.body.username });
-            }
-            else {
+            } else {
                 res.json({ loggedIn: false, message: 'Invalid credentials' });
             }
         }

@@ -9,6 +9,14 @@ const UserContext = ({ children }) => {
     token: localStorage.getItem("token"),
   });
   const navigate = useNavigate();
+
+/*   const logout = () => {
+    localStorage.removeItem("sid");
+    setUser({ loggedIn: null, token: null });
+    navigate("/");
+  } */
+
+  const [logout, setLogout] = useState(null);
   
   useEffect(() => {
     //${process.env.REACT_APP_SERVER_URL}
