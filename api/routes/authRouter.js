@@ -75,4 +75,9 @@ router.post('/signup', validateForm, async(req, res) => {
     }
 });
 
+router.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.json({ loggedIn: false });
+});
+
 module.exports = router;

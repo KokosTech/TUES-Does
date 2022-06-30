@@ -2,7 +2,14 @@ import { useEffect } from "react";
 
 const Logout = () => {
     const logout = () => {
-        localStorage.removeItem("sid");
+        fetch(`${process.env.REACT_APP_SERVER_URL}/auth/logout`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                //"Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
         window.location.href = "/";
     }
     useEffect(() => {
