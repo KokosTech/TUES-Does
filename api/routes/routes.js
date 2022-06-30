@@ -216,10 +216,10 @@ router
                             tasks.priority,
                             tasks.due_date,
                             tasks.flagged,
-                            tasks.completed,
+                            tasks.completed
                           FROM tasks
-                            JOIN users ON tasks.owner_id = users.id
-                          WHERE tasks.id = $1`, [id])
+                            JOIN lists ON tasks.list_id = lists.id
+                          WHERE lists.id = $1`, [id])
                 .then(task => {
                     res.json(task.rows);
                 }).catch(err => {
@@ -258,7 +258,7 @@ router
                                 task.list_id, 
                                 task.description, 
                                 task.priority, 
-                                task.due_date, 
+                                task.due_date.toLowerCase() === "null" || task.due_date === "" ? null : task.due_date, 
                                 false,
                                 task.completed])
                 .then(() => {
@@ -282,10 +282,22 @@ router
                 return;
             }
 
-            pool.query(`UPDATE tasks SET name = $1, completed = $2 WHERE id = $3`, [task.name, task.completed, task.id])
+            pool.query(`
+                UPDATE 
+                    tasks 
+                SET 
+                    name = $1,
+                    description = $2,
+                    priority = $3,
+                    due_date = $4,
+                    flagged = $5,
+                    completed = $6
+                WHERE 
+                    id = $7`, [task.name, task.description, task.priority, task.due_date.toLowerCase() === "null" || task.due_date === "" ? null : task.due_date, task.flagged, task.completed, task.id])
                 .then(() => {
                     res.json({ message: 'Task updated' });
                 }).catch(err => {
+                    console.log(err);
                     res.status(500).json({ error: err.message });
                 }
             );
@@ -302,9 +314,9 @@ router
                 res.status(400).json({ message: 'No task specified' });
                 return;
             }
-
-            pool.query(`DELETE FROM tasks WHERE id = $1`, [task.id])
+            pool.query(`DELETE FROM tasks WHERE id = $1;`, [id])
                 .then(() => {
+                    console.log("DELETED");
                     res.json({ message: 'Task deleted' });
                 }).catch(err => {
                     res.status(500).json({ error: err.message });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import { FaCheck, FaRegTrashAlt, FaFlag, FaPlus } from "react-icons/fa";
 
@@ -45,7 +45,7 @@ const List = () => {
             list_id: listID,
             description: description.value,
             priority: priority.value,
-            due_date: due.value || Date.now(),
+            due_date: due.value,
             completed: false
         };
 
@@ -62,13 +62,48 @@ const List = () => {
                     return;
                 }
                 return r.json();
+            })
+            .then(data => {
+                if (!data) {
+                    return;
+                }
+                setTodos([...todos, data]);
+                setModalIsOpen(false);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    const flagTask = (id) => {
+        const todo = todos.find(todo => todo.id === id);
+        const updatedTodo = {
+            ...todo,
+            flagged: !todo.flagged
+        };
+        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${id}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedTodo)
+        })
+            .then(r => {
+                if (!r || !r.ok || r.status >= 400) {
+                    return;
+                }
+                return r.json();
             }
             )
             .then(data => {
                 if (!data) {
                     return;
                 }
-                setTodos([...todos, data]);
+                setTodos(todos.map(todo => todo.id === id ? {
+                    ...todo,
+                    flagged: !todo.flagged
+                } : todo));
             }
             )
             .catch(err => {
@@ -101,6 +136,38 @@ const List = () => {
         }
     ));}
 
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${listID}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+
+        .then(r => {
+            if (!r || !r.ok || r.status >= 400) {
+                return;
+            }
+            return r.json();
+        }
+        )
+        .then(data => {
+            if (!data) {
+                return;
+            }
+            setTodos(data);
+            console.log(todos);
+        }
+        )
+        .catch(err => {
+            console.log(err);
+        }
+        );
+    }
+    , []);
+
     return (
         <div className="w-10/12 mr-5 flex-col dark:text-white mt-5">
             <div className="flex justify-between items-center">
@@ -114,9 +181,12 @@ const List = () => {
                     <li key={todo?.id} className={"flex justify-between items-center p-5 dark:bg-slate-900 border dark:border-slate-800 rounded-xl ".concat((todo?.completed) ? "opacity-80 line-through" : "")}>
                         <div className="flex justify-start items-center space-x-3">
                             <button className="p-2 rounded-md border bg-slate-800 dark:border-slate-700 dark:text-white dark:hover:bg-slate-700 dark:hover:border-slate-600" onClick={() => toggleTodo(todo?.id)}></button>
-                            <span className="text-lg">{todo?.title}</span>
+                            <span className="text-lg">{todo?.name}</span>
                         </div>
-                        <button className="p-2 rounded-md border bg-slate-800 dark:border-slate-700 dark:text-white dark:hover:bg-slate-700 dark:hover:border-slate-600" onClick={() => deleteTask(todo?.id)}><FaRegTrashAlt /></button>
+                        <div className="flex justify-start items-center space-x-3">
+                            <button className={`p-2 rounded-md border dark:text-white ${todo.flagged ? 'bg-amber-800 border-slate-700 hover:bg-amber-700 hover:border-slate-600' : 'bg-slate-800 dark:border-slate-700  dark:hover:bg-slate-700 dark:hover:border-slate-600'}`} onClick={() => flagTask(todo?.id)}><FaFlag /></button>
+                            <button className="p-2 rounded-md border bg-slate-800 dark:border-slate-700 dark:text-white dark:hover:bg-slate-700 dark:hover:border-slate-600" onClick={() => deleteTask(todo?.id)}><FaRegTrashAlt /></button>
+                        </div>
                     </li>
                 ))}
             </ul>
