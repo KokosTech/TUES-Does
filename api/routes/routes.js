@@ -219,7 +219,9 @@ router
                             tasks.completed
                           FROM tasks
                             JOIN lists ON tasks.list_id = lists.id
-                          WHERE lists.id = $1`, [id])
+                          WHERE lists.id = $1
+                          ORDER BY
+                            tasks.completed, tasks.id`, [id])
                 .then(task => {
                     res.json(task.rows);
                 }).catch(err => {
