@@ -1,11 +1,12 @@
 import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { AccountContext } from '../../contexts/UserContext';
 
 import NavItem from './NavItem'
 
 const Navigation = ({ isLoggedIn }) => {
     const [current, setCurrent] = useState('')
-    const [user, setUser] = useState('')
+    const { user } = useContext(AccountContext);
 
     const lists = ['To Do', 'In Progress', 'Done'];
 
@@ -14,7 +15,7 @@ const Navigation = ({ isLoggedIn }) => {
             <div className="p-2 h-full flex flex-col justify-between rounded-xl dark:bg-slate-900 overflow-hidden divide-y space-y-2 divide-slate-800">
                 <div className="flex flex-col justify-start divide-y divide-slate-800">
                     <div className='user flex items-center space-x-5 m-2'>
-                        <img className='w-16 border dark:border-slate-700 rounded-full' src={user?.pic || '/default.png'} alt='user profile'/>
+                        <img class='w-16 border dark:border-slate-700 rounded-full' src={user?.pic || '/default.png'} alt='user profile'/>
                         <p>{ user?.username || '(null)'}</p>
                     </div>
                     <div>
