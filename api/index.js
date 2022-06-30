@@ -43,7 +43,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const session = require('express-session'); 
-//const authRouter = require('./routes/authRouter');
+const authRouter = require('./routes/authRouter');
 const routes = require('./routes/routes');
 const pool = require('./db');
 
@@ -57,11 +57,14 @@ app.use(
   })
 );
 
+const morgan = require('morgan');
+app.use(morgan('combined'))
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/* app.use(session({
+app.use(session({
     name: 'sid',
     secret: process.env.COOKIE_SECRET,
     credentials: true,
@@ -73,9 +76,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
         sameSite: 'strict',
         secure: process.env.NODE_ENV === 'production',
         },
-})); */
+}));
 
-//app.use('/auth', authRouter);
+app.use('/auth', authRouter);
 
 app.use('/', routes);
 

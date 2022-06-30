@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { AccountContext } from "../contexts/UserContext";
 //import Home from "./../ToDo";
@@ -11,6 +11,16 @@ import Error404 from "../errors/404";
 
 const VRoutes = () => {
   const { user } = useContext(AccountContext);
+  useEffect(() => {
+    if (user) {
+      console.log("user", user);
+    }
+  }
+  , [user]);
+  useEffect(() => {
+    console.log("is logged in", user.loggedIn);
+  }
+  , []);
   return user.loggedIn === null ? (
     <h1>Loading...</h1>
   ) : (

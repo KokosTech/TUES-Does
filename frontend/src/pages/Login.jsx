@@ -6,11 +6,52 @@ const Login = () => {
 const { setUser } = useContext(AccountContext);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const { username, password } = e.target;
+        const user = {
+            username: username.value,
+            password: password.value
+        };
+
+        fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+            .then(r => {
+                if (!r || !r.ok || r.status >= 400) {
+                    setError("Invalid username or password");
+                    return;
+                }
+                return r.json();
+            })
+            .then(data => {
+                if (!data) {
+                    setError("Invalid username or password");
+                    return;
+                }
+                if(data.status) {
+                    setError(data.status);
+                } else if (data.loggedIn) {
+                    setUser({ ...data });
+                    navigate("/home");
+                }
+            })
+            .catch(err => {
+                setError("Invalid username or password");
+            });
+    }
+
+
   return (
       <div className="h-screen flex justify-evenly items-center dark:text-white dark:bg-black">
           <div className="flex flex-col w-3/12">
               <h1 className="text-4xl font-bold mb-5">log in</h1>
-              <form className="flex flex-col space-y-3 dark:text-black" onSubmit={console.log()}>
+              <form className="flex flex-col space-y-3 dark:text-black" onSubmit={handleSubmit}>
                   <label className="text-lg font-semibold dark:text-white" htmlFor="email">email</label>
                   <input className="p-2 rounded-md" type="text" name="username" placeholder="username" />
                   
@@ -26,7 +67,7 @@ const { setUser } = useContext(AccountContext);
                   </div>
               
               </form>
-              {/* <p>{error}</p> */}
+              <p className="text-red-600">{error}</p>
           </div>
       </div>
   );

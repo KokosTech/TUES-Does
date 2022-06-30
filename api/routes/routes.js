@@ -126,10 +126,9 @@ router
                             lists.icon,
                             lists.color,
                             lists.owner_id,
-                            users.username
                           FROM lists
                             JOIN users ON lists.owner_id = users.id
-                          WHERE lists.id = $1`, [id])
+                          WHERE user.id = $1`, [id])
                 .then(list => {
                     res.json(list.rows);
                 }).catch(err => {

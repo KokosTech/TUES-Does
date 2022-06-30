@@ -9,7 +9,7 @@ const useAuth = () => {
 };
 
 const PrivateRoutes = () => {
-  const isAuth = true // useAuth();
+  const isAuth = useAuth();
   return isAuth ? <Outlet /> : <Navigate to="/" />;
 };
 
