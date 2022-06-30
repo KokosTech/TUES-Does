@@ -293,7 +293,7 @@ router
                     flagged = $5,
                     completed = $6
                 WHERE 
-                    id = $7`, [task.name, task.description, task.priority, task.due_date.toLowerCase() === "null" || task.due_date === "" ? null : task.due_date, task.flagged, task.completed, task.id])
+                    id = $7`, [task.name, task.description, task.priority, task.due_date?.toLowerCase() === "null" || task.due_date === "" ? null : task.due_date, task.flagged, task.completed, task.id])
                 .then(() => {
                     res.json({ message: 'Task updated' });
                 }).catch(err => {

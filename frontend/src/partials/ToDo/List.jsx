@@ -67,8 +67,42 @@ const List = () => {
                 if (!data) {
                     return;
                 }
-                setTodos([...todos, data]);
+                //setTodos([...todos, ]);
                 setModalIsOpen(false);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    const toggleTodo = (id) => {
+        const todo = todos.find(todo => todo.id === id);
+        const newTodo = {
+            ...todo,
+            completed: !todo.completed
+        };
+        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${id}`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newTodo)
+        })
+            .then(r => {
+                if (!r || !r.ok || r.status >= 400) {
+                    return;
+                }
+                return r.json();
+            })
+            .then(data => {
+                if (!data) {
+                    return;
+                }
+                const newTodos = [...todos];
+                const index = newTodos.findIndex(todo => todo.id === id);
+                newTodos[index].completed = !newTodos[index].completed;
+                setTodos(newTodos);
             })
             .catch(err => {
                 console.log(err);
@@ -94,8 +128,7 @@ const List = () => {
                     return;
                 }
                 return r.json();
-            }
-            )
+            })
             .then(data => {
                 if (!data) {
                     return;
@@ -104,12 +137,10 @@ const List = () => {
                     ...todo,
                     flagged: !todo.flagged
                 } : todo));
-            }
-            )
+            })
             .catch(err => {
                 console.log(err);
-            }
-            );
+            });
     }
 
     const deleteTask = (id) => {
@@ -124,18 +155,6 @@ const List = () => {
         setTodos(todos.filter(todo => todo.id !== id));
     }
 
-    const toggleTodo = (id) => {
-        setTodos(todos.map(todo => {
-            if (todo.id === id) {
-                return {
-                    ...todo,
-                    completed: !todo.completed
-                }
-            }   
-            return todo;
-        }
-    ));}
-
     useEffect(() => {
         fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${listID}`, {
             method: "GET",
@@ -145,28 +164,24 @@ const List = () => {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`
             }
         })
-
         .then(r => {
             if (!r || !r.ok || r.status >= 400) {
                 return;
             }
             return r.json();
-        }
-        )
+        })
         .then(data => {
             if (!data) {
                 return;
             }
             setTodos(data);
             console.log(todos);
-        }
-        )
+        })
         .catch(err => {
             console.log(err);
-        }
-        );
+        });
     }
-    , []);
+    , [todos]);
 
     return (
         <div className="w-10/12 mr-5 flex-col dark:text-white mt-5">
