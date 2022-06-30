@@ -10,7 +10,12 @@ const Logout = () => {
                 //"Authorization": `Bearer ${localStorage.getItem("token")}`
             }
         })
-        window.location.href = "/";
+        .then(res => res.json())
+        .then(res => {
+            console.log(res);
+            localStorage.removeItem("token");
+            window.location.href = "/";
+        });
     }
     useEffect(() => {
         logout();
