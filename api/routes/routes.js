@@ -1,5 +1,6 @@
 const checkAuth = require('../middleware/checkAuth');
 const express = require('express');
+const pool = require('../db');
 
 const router = express.Router();
 
@@ -22,8 +23,9 @@ router
                 }
             );
         })
+    router
     .route("/lists/:user")
-        .get((req, res) => {
+        .get(checkAuth, (req, res) => {
             const user = req.params.user;
             if(!user) {
                 res.status(400).json({ message: 'No user specified' });
@@ -46,7 +48,7 @@ router
                 }
             );
         })
-        .post((req, res) => {
+        .post(checkAuth, (req, res) => {
             const user = req.params.user;
             if(!user) {
                 res.status(400).json({ message: 'No user specified' });
@@ -67,7 +69,7 @@ router
                 }
             );
         })
-        .put((req, res) => {
+        .put(checkAuth, (req, res) => {
             const user = req.params.user;
             if(!user) {
                 res.status(400).json({ message: 'No user specified' });
@@ -88,7 +90,7 @@ router
                 }
             );
         })
-        .delete((req, res) => {
+        .delete(checkAuth, (req, res) => {
             const user = req.params.user;
             if(!user) {
                 res.status(400).json({ message: 'No user specified' });
@@ -109,7 +111,8 @@ router
                 }
             );
         })
-    .route("/lists/:id")
+    router
+    .route(checkAuth, "/lists/:id")
         .get((req, res) => {
             const id = req.params.id;
             if(!id) {
@@ -155,7 +158,7 @@ router
                 }
             );
         })
-        .put((req, res) => {
+        .put(checkAuth, (req, res) => {
             const id = req.params.id;
             if(!id) {
                 res.status(400).json({ message: 'No id specified' });
@@ -176,7 +179,7 @@ router
                 }
             );
         })
-        .delete((req, res) => {
+        .delete(checkAuth, (req, res) => {
             const id = req.params.id;
             if(!id) {
                 res.status(400).json({ message: 'No id specified' });
@@ -197,7 +200,8 @@ router
                 }
             );
         })
-    .route("/tasks/:id")
+    router
+    .route(checkAuth, "/tasks/:id")
         .get((req, res) => {
             const id = req.params.id;
             if(!id) {
@@ -222,7 +226,7 @@ router
                 }
             );
         })
-        .post((req, res) => {
+        .post(checkAuth, (req, res) => {
             const id = req.params.id;
             if(!id) {
                 res.status(400).json({ message: 'No id specified' });
@@ -243,7 +247,7 @@ router
                 }
             );
         })
-        .put((req, res) => {
+        .put(checkAuth, (req, res) => {
             const id = req.params.id;
             if(!id) {
                 res.status(400).json({ message: 'No id specified' });
@@ -264,7 +268,7 @@ router
                 }
             );
         })
-        .delete((req, res) => {
+        .delete(checkAuth, (req, res) => {
             const id = req.params.id;
             if(!id) {
                 res.status(400).json({ message: 'No id specified' });
