@@ -40,7 +40,7 @@ router
                           FROM users
                             JOIN lists ON users.id = lists.owner_id
                           WHERE users.username = $1
-                          ORDER BY lists.name; `, [user])
+                          ORDER BY lists.id; `, [user])
                 .then(lists => {
                     res.json(lists.rows);
                 }).catch(err => {
@@ -61,9 +61,9 @@ router
                 return;
             }
 
-            pool.query(`INSERT INTO lists (name, icon, color, owner_id) VALUES ($1, $2, $3, (SELECT id FROM users WHERE username = $4))`, [list.name, list.icon || 'default', list.color || 'blue', user])
-                .then(() => {
-                    res.json({ message: 'List created' });
+            pool.query(`INSERT INTO lists (name, icon, color, owner_id) VALUES ($1, $2, $3, (SELECT id FROM users WHERE username = $4)) returning id;`, [list.name, list.icon || 'default', list.color || 'blue', user])
+                .then((data) => {
+                    res.json({ message: 'List created', id: data.rows[0].id });
                 }).catch(err => {
                     res.status(500).json({ error: err.message });
                 }
@@ -128,7 +128,9 @@ router
                             lists.owner_id,
                           FROM lists
                             JOIN users ON lists.owner_id = users.id
-                          WHERE user.id = $1`, [id])
+                          WHERE user.id = $1
+                          ORDER BY 
+                            lists.id`, [id])
                 .then(list => {
                     res.json(list.rows);
                 }).catch(err => {
@@ -149,9 +151,9 @@ router
                 return;
             }
 
-            pool.query(`INSERT INTO items (name, list_id) VALUES ($1, $2)`, [item.name, id])
-                .then(() => {
-                    res.json({ message: 'Item created' });
+            pool.query(`INSERT INTO items (name, list_id) VALUES ($1, $2) returning id;`, [item.name, id])
+                .then((data) => {
+                    res.json({ message: 'Item created', id: data.rows[0].id });
                 }).catch(err => {
                     res.status(500).json({ error: err.message });
                 }
@@ -237,7 +239,6 @@ router
             }
 
             const task = req.body;
-            console.log("HEEEEYYYYY");
             console.log(task);
             if(!task) {
                 res.status(400).json({ message: 'No task specified' });
@@ -255,7 +256,8 @@ router
                                 completed
                             ) 
                         VALUES 
-                            ($1, $2, $3, $4, $5, $6, $7);`, 
+                            ($1, $2, $3, $4, $5, $6, $7)
+                        returning id;`, 
                             [task.name, 
                                 task.list_id, 
                                 task.description, 
@@ -263,8 +265,9 @@ router
                                 task.due_date.toLowerCase() === "null" || task.due_date === "" ? null : task.due_date, 
                                 false,
                                 task.completed])
-                .then(() => {
-                    res.json({ message: 'Task created' });
+                .then((data) => {
+                    console.log("IDDDD:::: ", data.rows[0].id);
+                    res.json({ message: 'Task created', id: data.rows[0].id });
                 }).catch(err => {
                     console.log(err);
                     res.status(500).json({ error: err.message });

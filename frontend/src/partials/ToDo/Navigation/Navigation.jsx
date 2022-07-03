@@ -51,7 +51,7 @@ const Navigation = ({ isLoggedIn, current, setCurrent }) => {
         .catch(err => {
             console.log(err);
         });
-    }, [])
+    }, [user.username])
 
     return (
         <div className="sticky top-0 w-2/12 p-5 h-screen">
