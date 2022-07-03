@@ -20,6 +20,7 @@ const Logout = () => {
     useEffect(() => {
         logout();
     }, []);
+    
     return (
         <div>
             <h1>Logging out...</h1>

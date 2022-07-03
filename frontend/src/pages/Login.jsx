@@ -53,16 +53,16 @@ const { setUser } = useContext(AccountContext);
           <div className="flex flex-col w-3/12">
               <h1 className="text-4xl font-bold mb-5">log in</h1>
               <form className="flex flex-col space-y-3 dark:text-black" onSubmit={handleSubmit}>
-                  <label className="text-lg font-semibold dark:text-white" htmlFor="email">email</label>
-                  <input className="p-2 rounded-md" type="text" name="username" placeholder="username" />
+                  <label className="text-lg font-semibold dark:text-white" htmlFor="email">username</label>
+                  <input className="p-2 rounded-md bg-slate-100 hover:bg-slate-200 border border-slate-200 hover:border-slate-300" type="text" name="username" placeholder="username" />
                   
                   <label className="text-lg font-semibold dark:text-white" htmlFor="password">password</label>
-                  <input className="p-2 rounded-md" type="password" name="password" placeholder="password" />
+                  <input className="p-2 rounded-md bg-slate-100 hover:bg-slate-200 border border-slate-200 hover:border-slate-300" type="password" name="password" placeholder="password" />
                   
                   <div className="flex justify-center items-center space-x-6">
-                      <button className="p-2 rounded-md border bg-slate-900 dark:border-slate-800 dark:text-white dark:hover:bg-slate-800 dark:hover:border-slate-700 grow" type="submit">sign up</button>
+                      <button className="p-2 rounded-md border hover:bg-slate-100 dark:bg-slate-900 dark:border-slate-800 dark:text-white dark:hover:bg-slate-800 dark:hover:border-slate-700 grow" type="submit">log in</button>
                       <div className="flex justify-center items-center p-4">
-                          <Link className="underline dark:text-white dark:hover:text-neutral-200" to='/'>sign up</Link>
+                          <Link className="underline text-black hover:text-slate-600 dark:text-white dark:hover:text-neutral-200" to='/'>sign up</Link>
                       </div>
                       
                   </div>

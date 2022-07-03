@@ -4,24 +4,14 @@ import { useContext } from "react";
 import Modal from 'react-modal';
 import { FaCheck, FaRegTrashAlt, FaFlag, FaPlus } from "react-icons/fa";
 
-import { AccountContext } from "../../contexts/UserContext";
+import { AccountContext } from "../../../contexts/UserContext";
 
-const List = ({ type }) => {
+const List = ({ type, current, setCurrent}) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [listID, setListID] = useState(null);
     const [todos, setTodos] = useState([]);
 
     const { user } = useContext(AccountContext);
     //const { data, loading, error } = useFetch(`${process.env.REACT_APP_SERVER_URL}/lists/${user.username}`)
-    
-    useEffect(() => {
-        fetch(`${process.env.REACT_APP_SERVER_URL}/lists/${user.username}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log('AAAA', data);
-                setListID(data[0].id);
-            }).catch(err => console.log(err)); 
-    }, []);
 
     const customStyles = {
         content: {
@@ -58,14 +48,14 @@ const List = ({ type }) => {
         const { task, description, priority, due } = e.target;
         const newTodo = {
             name: task.value,
-            list_id: listID,
+            list_id: current,
             description: description.value,
             priority: priority.value,
             due_date: due.value,
             completed: false
         };
 
-        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${listID}`, {
+        fetch(`${process.env.REACT_APP_SERVER_URL}/tasks/${current}`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -172,7 +162,7 @@ const List = ({ type }) => {
     }
 
     useEffect(() => {
-        let url = `${process.env.REACT_APP_SERVER_URL}/tasks/${listID}`;
+        let url = `${process.env.REACT_APP_SERVER_URL}/tasks/${current}`;
         console.log("TYPE", type);
         if (type === "completed") {
             url += "/completed";
@@ -205,7 +195,7 @@ const List = ({ type }) => {
             console.log(err);
         });
     }
-    , [listID, type]);
+    , [current, type]);
 
     return (
         <div className="w-10/12 mr-5 flex-col dark:text-white mt-5">
@@ -230,31 +220,31 @@ const List = ({ type }) => {
                 ))}
             </ul>
             <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <form onSubmit={addNewTask}>
-            <label className="text-lg font-bold mb-2" htmlFor="task">Add New Task</label>
-            <input id="task" name="task" type="text" placeholder="task" />
+                isOpen={modalIsOpen}
+                onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+            >
+                <form onSubmit={addNewTask}>
+                    <label className="text-lg font-bold mb-2" htmlFor="task">Add New Task</label>
+                    <input id="task" name="task" type="text" placeholder="task" />
 
-            <label htmlFor="description">Description</label>
-            <textarea name="description" placeholder="description" />
+                    <label htmlFor="description">Description</label>
+                    <textarea name="description" placeholder="description" />
 
-            <label htmlFor="priority">Priority</label>
-            <input id="priority" name="priority" type="radio"value="1" />
+                    <label htmlFor="priority">Priority</label>
+                    <input id="priority" name="priority" type="radio"value="1" />
 
-            <input id="priority" name="priority" type="radio"value="2" />
-            <input id="priority" name="priority" type="radio"value="3" />
+                    <input id="priority" name="priority" type="radio"value="2" />
+                    <input id="priority" name="priority" type="radio"value="3" />
 
-            <label htmlFor="due">Due date</label>
-            <input id="due" name="due" type="date" />
+                    <label htmlFor="due">Due date</label>
+                    <input id="due" name="due" type="date" />
 
-            <button type="submit">Add</button>
-        </form>
-      </Modal>
+                    <button type="submit">Add</button>
+                </form>
+            </Modal>
         </div>
     );
 }
