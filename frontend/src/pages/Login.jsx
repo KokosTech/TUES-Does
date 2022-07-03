@@ -64,9 +64,7 @@ const { setUser } = useContext(AccountContext);
                       <div className="flex justify-center items-center p-4">
                           <Link className="underline text-black hover:text-slate-600 dark:text-white dark:hover:text-neutral-200" to='/'>sign up</Link>
                       </div>
-                      
                   </div>
-              
               </form>
               <p className="text-red-600">{error}</p>
           </div>
