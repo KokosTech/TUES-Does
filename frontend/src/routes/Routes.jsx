@@ -31,6 +31,8 @@ const VRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/home" element={<ToDo />} />
+        <Route path="/home/completed" element={<ToDo type='completed' />} />
+        <Route path="/home/progress" element={<ToDo type='progress' />} />
         <Route path="/logout" element={<Logout />} />
       </Route>
       <Route path="*" element={<Error404 />} />
